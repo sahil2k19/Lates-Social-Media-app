@@ -1,5 +1,5 @@
 const User = require("../models/User");
-const bcrypt =require("bcrypt")
+const bcrypt = require("bcrypt")
 const router = require("express").Router();
 
 //UPDATE USER
@@ -84,8 +84,27 @@ router.put("/:id/follow", async(req,res)=>{
             if(!user.followers.includes(userId)){
                 user.followers.push(userId);
                 currentUser.following.push(id);
+                await User.findByIdAndUpdate(id,
+                    {followers:user.followers},
+                    {new:true}
+                )
+                await User.findByIdAndUpdate(userId,
+                    {following:currentUser.following},
+                    {new:true}
+                )
+                return res.status(200).json({message:"User has been followed", user:user.followers,currentUser:currentUser.following});
             }else{
-                res.status(403).json("already follow");
+                user.followers.pull(userId);
+                currentUser.following.pull(id);
+                await User.findByIdAndUpdate(id,
+                    {followers:user.followers},
+                    {new:true}
+                )
+                await User.findByIdAndUpdate(userId,
+                    {following:currentUser.following},
+                    {new:true}
+                )
+                return res.status(200).json({message:"User has been Unfollowed", user:user.followers,currentUser:currentUser.following});
             }
         }catch(err){
             res.status(403).json(err);

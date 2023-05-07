@@ -15,7 +15,7 @@ router.post("/register", async(req,res)=>{
         res.status(200).json({message:"ok", user:user})
     }catch(err){
         res.status(404).json(err)
-    }
+    }                                    
 })
 
 router.post("/login", async(req,res)=>{
