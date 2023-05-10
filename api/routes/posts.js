@@ -98,11 +98,11 @@ router.put("/:id/like", async(req,res)=>{
 
 //get timeline posts
 
-router.get("/timeline/all", async (req, res) => {
-    const {userId} = req.body;
+router.get("/timeline/:userId", async (req, res) => {
+    const {userId} = req.params;
     try {
-        const currentUser = await User.findById(userId);
-        const userPosts = await Post.find({ userId: currentUser._id });
+      const currentUser = await User.findById(userId);
+      const userPosts = await Post.find({ userId: currentUser._id });
       const friendPosts = await Promise.all(
         currentUser.followings.map((friendId) => {
           return  Post.find({ userId: friendId });
